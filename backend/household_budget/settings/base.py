@@ -1,9 +1,11 @@
 import os
+from dotenv import load_dotenv
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
-SECRET_KEY = 'django-insecure-=0(p#qd+5w1$e+g*9dmfiu#pt9w9twf*-=umax7t00h2yj4gk%'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Application definition
 INSTALLED_APPS = [
@@ -35,6 +37,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'middleware.auth_middleware.UserIsolationMiddleware',
 ]
 
 ROOT_URLCONF = 'household_budget.urls'
@@ -113,3 +116,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
+
+# 세션 설정
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 1주일 (초 단위)
+SESSION_COOKIE_SECURE = True           # HTTPS 환경에서만 쿠키 전송
+SESSION_SAVE_EVERY_REQUEST = True      # 매 요청마다 세션 갱신
+
+# 인증 백엔드 (기본값 사용, 필요시 커스텀 가능)
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False  # JS에서 접근 필요시 False
+CSRF_TRUSTED_ORIGINS = ['https://your-frontend-domain.com']  # 프론트엔드 도메인 추가
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+

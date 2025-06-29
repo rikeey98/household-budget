@@ -31,3 +31,9 @@ yarn-error.log*
 
 # local .env files
 .env.local*
+
+# Environment specific files (보안상 민감한 정보 포함시)
+# .env.production
+# .env.staging
+
+# 하지만 현재는 민감한 정보가 없으므로 포함시킴

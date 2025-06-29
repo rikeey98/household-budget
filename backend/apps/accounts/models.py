@@ -7,6 +7,8 @@ class User(AbstractUser):
     커스텀 유저 모델
     Django 기본 User 모델을 확장하여 추후 필요한 필드 추가 가능
     """
+    nickname = models.CharField(max_length=30, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='가입일')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
     

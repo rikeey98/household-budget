@@ -18,6 +18,7 @@ DATABASES = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "https://your-frontend-domain.com", #TODO: 프론트엔드 도메인 추가
 ]

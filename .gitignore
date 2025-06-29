@@ -69,3 +69,5 @@ public/statics/
 .windsurfrules
 .env.example
 scripts/
+
+.env.production
