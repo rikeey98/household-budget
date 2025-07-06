@@ -1,68 +1,62 @@
-import config from '../config'
+import axios from 'axios';
 
-// API 기본 클래스
-class ApiService {
-  constructor() {
-    this.baseURL = config.api.baseURL
-    this.timeout = config.api.timeout
-  }
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api/', // Django API 주소
+  withCredentials: true, // ★ 세션 쿠키 자동 포함
+});
 
-  // 기본 fetch 래퍼
-  async request(endpoint, options = {}) {
-    const url = `${this.baseURL}${endpoint}`
-    const defaultOptions = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      ...options
-    }
+export default api;
+export { api };
 
-    if (config.app.debug) {
-      console.log(`🌐 API Request: ${options.method || 'GET'} ${url}`)
-    }
-
-    try {
-      const response = await fetch(url, defaultOptions)
-      
-      if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status}`)
-      }
-
-      const data = await response.json()
-      
-      if (config.app.debug) {
-        console.log(`✅ API Response:`, data)
-      }
-      
-      return data
-    } catch (error) {
-      console.error(`❌ API Error:`, error)
-      throw error
-    }
-  }
-
-  // HTTP 메서드들
-  get(endpoint) {
-    return this.request(endpoint, { method: 'GET' })
-  }
-
-  post(endpoint, data) {
-    return this.request(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-  }
-
-  put(endpoint, data) {
-    return this.request(endpoint, {
-      method: 'PUT', 
-      body: JSON.stringify(data)
-    })
-  }
-
-  delete(endpoint) {
-    return this.request(endpoint, { method: 'DELETE' })
-  }
+// CSRF 토큰 받아오는 함수
+export async function fetchCSRFToken() {
+  const res = await api.get('accounts/auth/csrf/');
+  // Django는 보통 { csrfToken: "..." } 형태로 응답
+  return res.data.csrfToken;
 }
 
-export default new ApiService()
+// 로그인 함수
+export async function login(username, password) {
+  const csrfToken = await fetchCSRFToken();
+  return api.post(
+    'accounts/auth/login/',
+    { username, password },
+    {
+      headers: {
+        'X-CSRFToken': csrfToken,
+      },
+    }
+  );
+}
+
+export async function getCurrentUser() {
+  return api.get('accounts/auth/user/');
+}
+
+// 로그아웃 함수
+export async function logout() {
+  const csrfToken = await fetchCSRFToken();
+  return api.post(
+    'accounts/auth/logout/',
+    {},
+    {
+      headers: {
+        'X-CSRFToken': csrfToken,
+      },
+    }
+  );
+}
+
+// 회원가입 함수
+export async function register(data) {
+  const csrfToken = await fetchCSRFToken();
+  return api.post(
+    'accounts/auth/register/',
+    data,
+    {
+      headers: {
+        'X-CSRFToken': csrfToken,
+      },
+    }
+  );
+}

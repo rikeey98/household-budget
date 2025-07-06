@@ -136,3 +136,11 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:9000",  # Quasar dev 서버 주소
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:9000",
+]
+

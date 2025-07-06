@@ -19,5 +19,6 @@ urlpatterns = [
     # API 문서
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui-alt'),
     path('api/test/', test_api, name='test-api'),  # 테스트용 API
 ]

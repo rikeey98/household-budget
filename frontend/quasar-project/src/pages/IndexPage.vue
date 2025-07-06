@@ -109,18 +109,31 @@
           </div>
         </q-card-section>
       </q-card>
+
+      <div v-if="auth.isAuthenticated">
+        <p>로그인: {{ auth.user.username }} ({{ auth.user.email }})</p>
+        <q-btn label="로그아웃" color="negative" @click="handleLogout" :loading="auth.loading" />
+      </div>
+      <div v-else>
+        <p>로그인하지 않았습니다.</p>
+        <q-btn label="로그인" color="primary" @click="goToLogin" />
+      </div>
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import config from '../config'
 import apiService from '../services/api'
+import { useAuthStore } from 'src/stores/auth'
+import { useRouter } from 'vue-router'
 // 환경 설정 데모 실행
 import '../demo/env-demo.js'
 
 const response = ref(null)
+const auth = useAuthStore()
+const router = useRouter()
 
 // 간단한 가계부 기능을 위한 데이터
 const expense = ref({
@@ -166,4 +179,16 @@ const addExpense = () => {
     console.log('✅ 지출 추가됨:', expenses.value)
   }
 }
+
+function goToLogin() {
+  router.push('/login')
+}
+
+function handleLogout() {
+  auth.logoutAction()
+}
+
+onMounted(() => {
+  auth.fetchUser()
+})
 </script>

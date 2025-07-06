@@ -8,7 +8,7 @@ export default defineConfig((ctx) => {
   console.log(`🔧 Debug: ${process.env.VITE_DEBUG}`)
   
   return {
-    boot: [],
+    boot: ['pinia'],
     css: ['app.scss'],
     
     extras: [
