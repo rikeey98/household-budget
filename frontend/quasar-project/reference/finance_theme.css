@@ -1,0 +1,83 @@
+:root {
+  /* 기본 색상 */
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.2 0 0);
+  
+  /* 브랜드 컬러 */
+  --primary: oklch(0.55 0.15 155);
+  --primary-foreground: oklch(0.98 0 0);
+  
+  /* 시맨틱 컬러 */
+  --income: oklch(0.65 0.15 155);
+  --expense: oklch(0.65 0.15 15);
+  --neutral: oklch(0.65 0.05 155);
+  
+  /* 사이드바 */
+  --sidebar-bg: oklch(0.99 0 0);
+  --sidebar-hover: oklch(0.95 0.03 155);
+  --sidebar-active: oklch(0.90 0.05 155);
+  --sidebar-border: oklch(0.9 0 0);
+  --sidebar-foreground: oklch(0.3 0 0);
+  
+  /* 카드 & 컴포넌트 */
+  --card-bg: oklch(1 0 0);
+  --card-border: oklch(0.93 0 0);
+  --card-hover: oklch(0.96 0 0);
+  
+  /* 차트 컬러 */
+  --chart-1: oklch(0.55 0.15 155);
+  --chart-2: oklch(0.60 0.15 200);
+  --chart-3: oklch(0.65 0.15 250);
+  --chart-4: oklch(0.70 0.15 300);
+  --chart-5: oklch(0.75 0.15 350);
+  
+  /* 상태 컬러 */
+  --success: oklch(0.65 0.15 155);
+  --warning: oklch(0.75 0.15 85);
+  --error: oklch(0.65 0.15 15);
+  --info: oklch(0.65 0.15 250);
+  
+  /* 프로그레스 바 */
+  --progress-bg: oklch(0.95 0 0);
+  --progress-fill: oklch(0.55 0.15 155);
+  
+  /* 폰트 */
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* 타이포그래피 */
+  --h1: 2rem;
+  --h2: 1.5rem;
+  --h3: 1.25rem;
+  --body: 1rem;
+  --small: 0.875rem;
+  
+  /* 간격 */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 1rem;
+  --spacing-4: 1.5rem;
+  --spacing-5: 2rem;
+  
+  /* 반경 */
+  --radius-sm: 0.3rem;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+  
+  /* 그림자 */
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.05);
+  --shadow: 0 2px 4px oklch(0 0 0 / 0.08);
+  --shadow-lg: 0 8px 16px oklch(0 0 0 / 0.10);
+  
+  /* 애니메이션 */
+  --transition: 200ms ease-out;
+  --transition-slow: 300ms ease-out;
+  
+  /* 사이드바 크기 */
+  --sidebar-width: 280px;
+  --sidebar-collapsed: 64px;
+  
+  /* 헤더 크기 */
+  --header-height: 60px;
+}
