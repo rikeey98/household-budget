@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카테고리 설정 - My Finance</title>
+    <link rel="stylesheet" href="finance_theme.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 카테고리 목록 영역 */
+        .category-list {
+            width: 400px;
+            padding: var(--spacing-4);
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .category-items {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: var(--spacing-4);
+        }
+
+        .category-item {
+            padding: var(--spacing-3);
+            margin: var(--spacing-1) 0;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .category-item:hover {
+            background: var(--sidebar-hover);
+        }
+
+        .category-item.active {
+            background: var(--sidebar-active);
+        }
+
+        .subcategory {
+            margin-left: var(--spacing-4);
+            border-left: 2px solid var(--card-border);
+            padding-left: var(--spacing-2);
+        }
+
+        /* 새 카테고리 추가 버튼 */
+        .add-category {
+            padding: var(--spacing-3);
+            border-top: 1px solid var(--card-border);
+            margin-top: auto;
+        }
+
+        .add-button {
+            width: 100%;
+            padding: var(--spacing-3);
+            background: var(--card-bg);
+            border: 1px dashed var(--card-border);
+            border-radius: var(--radius);
+            color: var(--primary);
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-2);
+        }
+
+        .add-button:hover {
+            background: var(--sidebar-hover);
+            border-color: var(--primary);
+        }
+
+        /* 상세 패널 */
+        .detail-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 400px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--card-border);
+            padding: var(--spacing-4);
+            transform: translateX(100%);
+            transition: transform var(--transition-slow);
+            z-index: 50;
+            overflow-y: auto;
+        }
+
+        .detail-panel.active {
+            transform: translateX(0);
+        }
+
+        .detail-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition);
+            z-index: 40;
+        }
+
+        .detail-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 폼 요소 */
+        .form-group {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-2);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-2);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-foreground);
+        }
+
+        /* 이모지 선택기 */
+        .emoji-picker {
+            display: flex;
+            gap: var(--spacing-2);
+            flex-wrap: wrap;
+            padding: var(--spacing-2);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+        }
+
+        .emoji-item {
+            padding: var(--spacing-2);
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+
+        .emoji-item:hover {
+            background: var(--sidebar-hover);
+        }
+
+        .emoji-item.selected {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- 카테고리 목록 -->
+        <div class="category-list">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">카테고리 설정</h1>
+            </div>
+
+            <div class="tabs mb-6">
+                <button class="tab active">수입</button>
+                <button class="tab">지출</button>
+            </div>
+
+            <div class="category-items">
+                <div class="category-item" onclick="showDetail('급여')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xl">🎨</span>
+                            <div>
+                                <div class="font-medium">급여</div>
+                                <div class="text-sm text-gray-500">정규직 급여 및 성과급</div>
+                            </div>
+                        </div>
+                        <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                    </div>
+                </div>
+
+                <div class="subcategory">
+                    <div class="category-item" onclick="showDetail('정기급여')">
+                        <div class="flex items-center justify-between">
+                            <div class="font-medium">정기급여</div>
+                            <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div class="category-item" onclick="showDetail('보너스')">
+                        <div class="flex items-center justify-between">
+                            <div class="font-medium">보너스</div>
+                            <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-item" onclick="showDetail('투자수익')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xl">💰</span>
+                            <div>
+                                <div class="font-medium">투자수익</div>
+                                <div class="text-sm text-gray-500">주식, 이자 등의 투자 수익</div>
+                            </div>
+                        </div>
+                        <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="add-category">
+                <button class="add-button" onclick="showDetail('new')">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                    <span>새 카테고리 추가</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 상세 패널 오버레이 -->
+        <div class="detail-overlay" onclick="hideDetail()"></div>
+
+        <!-- 상세 패널 -->
+        <div class="detail-panel">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold" id="detailTitle">카테고리 상세</h2>
+                <button onclick="hideDetail()">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">아이콘 선택</label>
+                <div class="emoji-picker">
+                    <div class="emoji-item selected">🎨</div>
+                    <div class="emoji-item">💰</div>
+                    <div class="emoji-item">🏠</div>
+                    <div class="emoji-item">🎮</div>
+                    <div class="emoji-item">🍔</div>
+                    <div class="emoji-item">🚗</div>
+                    <div class="emoji-item">✨</div>
+                    <div class="emoji-item">📱</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">이름</label>
+                <input type="text" class="form-input" id="categoryName">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">설명</label>
+                <input type="text" class="form-input" id="categoryDesc">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">상위 카테고리</label>
+                <select class="form-input">
+                    <option>없음</option>
+                    <option>수입</option>
+                    <option>투자</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">예산 설정</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2">
+                        <input type="radio" name="budget" checked>
+                        <span>예산 제외</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="radio" name="budget">
+                        <span>월 예산 설정</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">알림 설정</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox">
+                        <span>새 거래 발생시 알림</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox">
+                        <span>예산 초과시 알림</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-8">
+                <button class="bg-primary text-white px-6 py-2 rounded-lg flex-1" onclick="saveCategory()">
+                    저장
+                </button>
+                <button class="border border-gray-300 px-6 py-2 rounded-lg" onclick="hideDetail()">
+                    취소
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lucide 아이콘 초기화
+        lucide.createIcons();
+
+        // 상세 패널 컨트롤
+        const detailPanel = document.querySelector('.detail-panel');
+        const detailOverlay = document.querySelector('.detail-overlay');
+        const detailTitle = document.getElementById('detailTitle');
+        const categoryNameInput = document.getElementById('categoryName');
+        const categoryDescInput = document.getElementById('categoryDesc');
+
+        function showDetail(category) {
+            detailPanel.classList.add('active');
+            detailOverlay.classList.add('active');
+            
+            if (category === 'new') {
+                detailTitle.textContent = '새 카테고리 추가';
+                categoryNameInput.value = '';
+                categoryDescInput.value = '';
+            } else {
+                detailTitle.textContent = '카테고리 수정';
+                categoryNameInput.value = category;
+                // 실제 구현시 카테고리 데이터 로드
+            }
+        }
+
+        function hideDetail() {
+            detailPanel.classList.remove('active');
+            detailOverlay.classList.remove('active');
+        }
+
+        function saveCategory() {
+            // TODO: 저장 로직 구현
+            hideDetail();
+            showToast('카테고리가 저장되었습니다');
+        }
+
+        // 이모지 선택
+        document.querySelectorAll('.emoji-item').forEach(emoji => {
+            emoji.addEventListener('click', () => {
+                document.querySelectorAll('.emoji-item').forEach(e => e.classList.remove('selected'));
+                emoji.classList.add('selected');
+            });
+        });
+
+        // 토스트 메시지
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
