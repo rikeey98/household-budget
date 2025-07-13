@@ -1,5 +1,71 @@
 <template>
   <q-page class="q-pa-md">
+    <!-- 필터 바 -->
+    <div class="row q-gutter-md items-center q-mb-md">
+      <!-- 기간(날짜 범위) -->
+      <q-input
+        filled
+        :model-value="dateRangeDisplay"
+        label="기간"
+        readonly
+        style="width: 200px"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy 
+              cover 
+              transition-show="scale" 
+              transition-hide="scale"
+              v-model="showDatePicker"
+            >
+              <q-date
+                v-model="filters.dateRange"
+                range
+                mask="YYYY-MM-DD"
+                @update:model-value="showDatePicker = false"
+              />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
+      <!-- 카테고리 -->
+      <q-select
+        filled
+        v-model="filters.category"
+        :options="categoryFilterOptions"
+        label="카테고리"
+        emit-value
+        map-options
+        style="width: 150px"
+      />
+      <!-- 거래 타입 -->
+      <q-select
+        filled
+        v-model="filters.type"
+        :options="typeFilterOptions"
+        label="거래 타입"
+        emit-value
+        map-options
+        style="width: 120px"
+      />
+      <!-- 결제수단 -->
+      <q-select
+        filled
+        v-model="filters.paymentMethod"
+        :options="paymentFilterOptions"
+        label="결제수단"
+        emit-value
+        map-options
+        style="width: 120px"
+      />
+      <!-- 금액 범위 -->
+      <q-input filled v-model.number="filters.minAmount" label="최소금액" type="number" style="width: 100px" />
+      <q-input filled v-model.number="filters.maxAmount" label="최대금액" type="number" style="width: 100px" />
+      <!-- 검색어 -->
+      <q-input filled v-model="filters.keyword" label="검색어" style="width: 150px" />
+      <!-- 적용 버튼 -->
+      <q-btn color="primary" label="적용" @click="fetchTransactions" />
+    </div>
     <div class="row items-center q-mb-md">
       <div class="text-h5 text-bold">거래 내역 관리</div>
       <q-space />
@@ -118,6 +184,32 @@ const form = ref({
   date: '',
 })
 
+const filters = ref({
+  dateRange: null, // {from, to} or null
+  category: null,       // 카테고리 id
+  type: '',             // 'expense'/'income'/''
+  paymentMethod: '',    // 'card'/'cash'/'account'/''
+  minAmount: null,
+  maxAmount: null,
+  keyword: ''
+})
+
+const dateRangeDisplay = computed({
+  get() {
+    if (!filters.value.dateRange) return ''
+    if (typeof filters.value.dateRange === 'string') return filters.value.dateRange
+    if (filters.value.dateRange.from && filters.value.dateRange.to)
+      return `${filters.value.dateRange.from} ~ ${filters.value.dateRange.to}`
+    if (filters.value.dateRange.from)
+      return filters.value.dateRange.from
+    return ''
+  },
+  set() {
+    // 사용자가 직접 입력하는 경우는 없으므로 무시
+  }
+})
+const showDatePicker = ref(false)
+
 const columns = [
   { name: 'date', label: '날짜', field: 'date', align: 'left', sortable: true },
   { name: 'transaction_type', label: '타입', field: 'transaction_type', align: 'left', sortable: true },
@@ -143,6 +235,22 @@ const categoryOptions = computed(() => {
   return categories.value.filter(cat => cat.category_type === form.value.transaction_type)
 })
 
+const categoryFilterOptions = computed(() => [
+  { label: '전체', value: null },
+  ...categories.value.map(cat => ({ label: cat.name, value: cat.id }))
+])
+const typeFilterOptions = [
+  { label: '전체', value: '' },
+  { label: '지출', value: 'expense' },
+  { label: '수입', value: 'income' }
+]
+const paymentFilterOptions = [
+  { label: '전체', value: '' },
+  { label: '카드', value: 'card' },
+  { label: '현금', value: 'cash' },
+  { label: '계좌이체', value: 'account' }
+]
+
 onMounted(async () => {
   await fetchCategories()
   await fetchTransactions()
@@ -160,7 +268,27 @@ async function fetchCategories() {
 async function fetchTransactions() {
   loading.value = true
   try {
-    const res = await api.get('transactions/transactions/')
+    const params = {}
+    // 날짜 범위 파싱
+    if (filters.value.dateRange) {
+      let start, end
+      if (typeof filters.value.dateRange === 'string' && filters.value.dateRange.includes('~')) {
+        [start, end] = filters.value.dateRange.split('~').map(s => s.trim())
+      } else if (typeof filters.value.dateRange === 'object' && filters.value.dateRange.from && filters.value.dateRange.to) {
+        start = filters.value.dateRange.from
+        end = filters.value.dateRange.to
+      }
+      if (start) params.start_date = start
+      if (end) params.end_date = end
+    }
+    if (filters.value.category) params.category = filters.value.category
+    if (filters.value.type) params.type = filters.value.type
+    if (filters.value.paymentMethod) params.payment_method = filters.value.paymentMethod
+    if (filters.value.minAmount) params.min_amount = filters.value.minAmount
+    if (filters.value.maxAmount) params.max_amount = filters.value.maxAmount
+    if (filters.value.keyword) params.description = filters.value.keyword
+
+    const res = await api.get('transactions/transactions/', { params })
     transactions.value = (Array.isArray(res.data) ? res.data : []).map(row => ({
       ...row,
       category_name: getCategoryName(row.category)
