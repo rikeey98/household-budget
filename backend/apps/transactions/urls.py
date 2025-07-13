@@ -1,6 +1,10 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import TransactionViewSet
+
+router = DefaultRouter()
+router.register(r'transactions', TransactionViewSet, basename='transaction')
 
 urlpatterns = [
-    # 나중에 추가
+    path('', include(router.urls)),
 ]

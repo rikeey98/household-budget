@@ -1,16 +1,23 @@
 <template>
-  <ul>
-    <li v-for="cat in categories" :key="cat.id">
-      {{ cat.name }}
-      <button @click="$emit('add', cat)">추가</button>
-      <button @click="$emit('edit', cat)">수정</button>
-      <button @click="$emit('delete', cat)">삭제</button>
-      <CategoryTree v-if="cat.children && cat.children.length" :categories="cat.children" @add="$emit('add', $event)" @edit="$emit('edit', $event)" @delete="$emit('delete', $event)" />
-    </li>
-  </ul>
+  <q-tree
+    :nodes="categories"
+    node-key="id"
+    label-key="name"
+    :default-expand-all="true"
+  >
+    <template v-slot:default-header="props">
+      <div class="row items-center q-gutter-sm">
+        <q-icon v-if="props.node.emoji" :name="props.node.emoji" size="md" />
+        <span>{{ props.node.name }}</span>
+        <q-btn dense flat icon="edit" @click.stop="$emit('edit', props.node)" size="sm" />
+        <q-btn dense flat icon="delete" color="negative" @click.stop="$emit('delete', props.node)" size="sm" />
+      </div>
+    </template>
+  </q-tree>
 </template>
 
 <script setup>
+import { QTree, QBtn, QIcon } from 'quasar'
 defineProps({
   categories: {
     type: Array,

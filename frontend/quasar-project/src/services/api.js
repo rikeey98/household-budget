@@ -60,3 +60,27 @@ export async function register(data) {
     }
   );
 }
+
+// CSRF 토큰을 포함한 DELETE 요청 헬퍼
+export async function deleteWithCSRF(url, config = {}) {
+  const csrfToken = await fetchCSRFToken();
+  return api.delete(url, {
+    ...config,
+    headers: {
+      ...(config.headers || {}),
+      'X-CSRFToken': csrfToken,
+    },
+  });
+}
+// api.delete 대신 deleteWithCSRF(url) 사용 권장
+
+export async function postWithCSRF(url, data, config = {}) {
+  const csrfToken = await fetchCSRFToken();
+  return api.post(url, data, {
+    ...config,
+    headers: {
+      ...(config.headers || {}),
+      'X-CSRFToken': csrfToken,
+    },
+  });
+}
