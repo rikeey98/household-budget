@@ -8,7 +8,12 @@ export default defineConfig((ctx) => {
   console.log(`🔧 Debug: ${process.env.VITE_DEBUG}`)
   
   return {
-    boot: ['pinia'],
+    boot: [
+      'pinia'
+    ],
+    plugins: [
+      'Notify'
+    ],
     css: ['app.scss'],
     
     extras: [
@@ -39,7 +44,7 @@ export default defineConfig((ctx) => {
 
     framework: {
       config: {},
-      plugins: []
+      plugins: ['Notify']
     },
 
     animations: [],

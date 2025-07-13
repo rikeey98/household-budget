@@ -6,7 +6,8 @@ const routes = [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'category-manager', component: () => import('pages/CategoryManager.vue'), meta: { requiresAuth: true } },
       { path: 'login', component: () => import('pages/LoginPage.vue') },
-      { path: 'register', component: () => import('pages/RegisterPage.vue') }
+      { path: 'register', component: () => import('pages/RegisterPage.vue') },
+      { path: 'transaction-manager', component: () => import('pages/TransactionManager.vue'), meta: { requiresAuth: true } }
     ]
   },
   {
