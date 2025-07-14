@@ -6,6 +6,7 @@ from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSe
 from django.contrib.auth import login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
+from drf_spectacular.utils import extend_schema
 
 
 class RegisterView(APIView):
@@ -17,6 +18,7 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
+    @extend_schema(request=UserLoginSerializer)
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():

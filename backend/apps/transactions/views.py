@@ -4,11 +4,15 @@ from .models import Transaction
 from .serializers import TransactionSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import TransactionFilter
 
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TransactionFilter
 
     def get_queryset(self):
         # 본인 거래만 조회

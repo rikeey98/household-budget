@@ -6,7 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable is not set")
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -20,6 +21,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'drf_spectacular',
+    'django_filters',
     
     # Local apps
     'apps.accounts',
@@ -60,6 +62,9 @@ TEMPLATES = [
 # REST Framework 설정
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
 }
 
 WSGI_APPLICATION = 'household_budget.wsgi.application'
@@ -129,8 +134,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = False  # JS에서 접근 필요시 False
-CSRF_TRUSTED_ORIGINS = ['https://your-frontend-domain.com']  # 프론트엔드 도메인 추가
+# TODO: Update with actual frontend domain before production deployment
+CSRF_TRUSTED_ORIGINS = []  # Will be set in prod.pyCSRF_TRUSTED_ORIGINS = ['https://your-frontend-domain.com']  # 프론트엔드 도메인 추가
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -140,7 +145,3 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:9000",  # Quasar dev 서버 주소
 ]
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:9000",
-]
-
