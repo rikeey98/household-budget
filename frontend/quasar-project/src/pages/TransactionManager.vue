@@ -366,7 +366,6 @@ async function handleSave() {
     payment_method: form.value.payment_method,
     date: form.value.date
   }
-  console.log('전송 데이터:', payload)
   loading.value = true
   try {
     if (dialogMode.value === 'add') {

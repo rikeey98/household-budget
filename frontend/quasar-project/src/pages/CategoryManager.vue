@@ -21,62 +21,6 @@
               <q-btn color="primary" icon="add" label="새 카테고리 추가" @click="onAdd(null)" class="full-width" />
             </div>
           </q-col>
-          <!-- 우측: 상세 패널(슬라이드) -->
-          <q-drawer v-model="showPanel" side="right" overlay bordered :width="400" :breakpoint="700" class="q-pa-md">
-            <q-form @submit.prevent="handleSaveCategory">
-              <div class="row items-center q-mb-md">
-                <div class="text-h6">{{ dialogMode === 'add' ? '새 카테고리 추가' : '카테고리 수정' }}</div>
-                <q-space />
-                <q-btn icon="close" flat round dense @click="closePanel" />
-              </div>
-              <div class="q-mb-md">
-                <div class="text-subtitle2 q-mb-xs">아이콘 선택</div>
-                <q-row class="q-gutter-xs" wrap>
-                  <q-col v-for="emoji in emojis" :key="emoji" cols="3" sm="2" md="2">
-                    <q-btn :label="emoji" flat round :color="selectedEmoji === emoji ? 'primary' : 'grey-4'" @click="selectedEmoji = emoji" class="full-width" />
-                  </q-col>
-                </q-row>
-              </div>
-              <q-input v-model="newCategoryName" label="이름" dense outlined required class="q-mb-md" />
-              <q-input v-model="newCategoryDesc" label="설명" dense outlined class="q-mb-md" />
-              <q-select
-                v-model="newCategoryParent"
-                :options="parentCategoryOptions"
-                option-value="id"
-                option-label="name"
-                label="상위 카테고리"
-                dense outlined emit-value map-options
-                class="q-mb-md"
-                :clearable="true"
-                :placeholder="'없음'"
-              />
-              <div class="q-mb-md">
-                <div class="text-subtitle2 q-mb-xs">예산 설정</div>
-                <q-option-group
-                  v-model="budgetOption"
-                  :options="budgetOptions"
-                  type="radio"
-                  inline
-                />
-              </div>
-              <div class="q-mb-md">
-                <div class="text-subtitle2 q-mb-xs">알림 설정</div>
-                <q-checkbox v-model="notifyOnTransaction" label="새 거래 발생시 알림" />
-                <q-checkbox v-model="notifyOnBudgetExceed" label="예산 초과시 알림" />
-              </div>
-              <q-row class="q-gutter-sm q-mt-lg">
-                <q-col cols="12" sm="4">
-                  <q-btn type="submit" color="primary" label="저장" :loading="loading" class="full-width" />
-                </q-col>
-                <q-col cols="12" sm="4">
-                  <q-btn flat label="취소" @click="closePanel" class="full-width" :disable="loading" />
-                </q-col>
-                <q-col cols="12" sm="4" v-if="dialogMode === 'edit'">
-                  <q-btn flat color="negative" label="삭제" @click="showDeleteDialog = true" class="full-width" :disable="loading" />
-                </q-col>
-              </q-row>
-            </q-form>
-          </q-drawer>
           <!-- 삭제 확인 다이얼로그 -->
           <q-dialog v-model="showDeleteDialog">
             <q-card>
@@ -89,6 +33,62 @@
             </q-card>
           </q-dialog>
         </q-row>
+        <!-- q-drawer를 q-layout의 직계 자식으로 이동 -->
+        <q-drawer v-model="showPanel" side="right" overlay bordered :width="400" :breakpoint="700" class="q-pa-md">
+          <q-form @submit.prevent="handleSaveCategory">
+            <div class="row items-center q-mb-md">
+              <div class="text-h6">{{ dialogMode === 'add' ? '새 카테고리 추가' : '카테고리 수정' }}</div>
+              <q-space />
+              <q-btn icon="close" flat round dense @click="closePanel" />
+            </div>
+            <div class="q-mb-md">
+              <div class="text-subtitle2 q-mb-xs">아이콘 선택</div>
+              <q-row class="q-gutter-xs" wrap>
+                <q-col v-for="emoji in emojis" :key="emoji" cols="3" sm="2" md="2">
+                  <q-btn :label="emoji" flat round :color="selectedEmoji === emoji ? 'primary' : 'grey-4'" @click="selectedEmoji = emoji" class="full-width" />
+                </q-col>
+              </q-row>
+            </div>
+            <q-input v-model="newCategoryName" label="이름" dense outlined required class="q-mb-md" />
+            <q-input v-model="newCategoryDesc" label="설명" dense outlined class="q-mb-md" />
+            <q-select
+              v-model="newCategoryParent"
+              :options="parentCategoryOptions"
+              option-value="id"
+              option-label="name"
+              label="상위 카테고리"
+              dense outlined emit-value map-options
+              class="q-mb-md"
+              :clearable="true"
+              :placeholder="'없음'"
+            />
+            <div class="q-mb-md">
+              <div class="text-subtitle2 q-mb-xs">예산 설정</div>
+              <q-option-group
+                v-model="budgetOption"
+                :options="budgetOptions"
+                type="radio"
+                inline
+              />
+            </div>
+            <div class="q-mb-md">
+              <div class="text-subtitle2 q-mb-xs">알림 설정</div>
+              <q-checkbox v-model="notifyOnTransaction" label="새 거래 발생시 알림" />
+              <q-checkbox v-model="notifyOnBudgetExceed" label="예산 초과시 알림" />
+            </div>
+            <q-row class="q-gutter-sm q-mt-lg">
+              <q-col cols="12" sm="4">
+                <q-btn type="submit" color="primary" label="저장" :loading="loading" class="full-width" />
+              </q-col>
+              <q-col cols="12" sm="4">
+                <q-btn flat label="취소" @click="closePanel" class="full-width" :disable="loading" />
+              </q-col>
+              <q-col cols="12" sm="4" v-if="dialogMode === 'edit'">
+                <q-btn flat color="negative" label="삭제" @click="showDeleteDialog = true" class="full-width" :disable="loading" />
+              </q-col>
+            </q-row>
+          </q-form>
+        </q-drawer>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -136,12 +136,12 @@ async function fetchCategories() {
   }
 }
 
-function onAdd() {
+function onAdd(parentCategory = null) {
   dialogMode.value = 'add'
   selectedCategory.value = null
   newCategoryName.value = ''
   newCategoryDesc.value = ''
-  newCategoryParent.value = null
+  newCategoryParent.value = parentCategory?.id || null
   selectedEmoji.value = emojis[0]
   budgetOption.value = 'none'
   notifyOnTransaction.value = false
