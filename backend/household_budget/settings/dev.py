@@ -47,3 +47,8 @@ CORS_ALLOW_HEADERS = [
 
 # 개발용 이메일, 캐시 등 필요시 추가
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:9000",
+    "http://127.0.0.1:9000",
+]
