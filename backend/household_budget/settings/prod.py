@@ -22,6 +22,9 @@ CORS_ALLOW_CREDENTIALS = True
 # 환경변수로 프론트엔드 도메인 설정
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 
+# CSRF 신뢰 출처 설정 (Railway 도메인 포함)
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+
 # 허용할 HTTP 메서드
 CORS_ALLOW_METHODS = [
     'DELETE',
