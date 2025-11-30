@@ -27,6 +27,12 @@ CORS_ALLOWED_ORIGINS = [origin.strip() for origin in _cors_origins.split(',') if
 _csrf_origins = os.getenv('CSRF_TRUSTED_ORIGINS', '')
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_origins.split(',') if origin.strip()]
 
+# 크로스 도메인 세션/쿠키 설정 (프론트엔드와 백엔드가 다른 도메인일 때)
+SESSION_COOKIE_SAMESITE = 'None'  # 크로스 사이트 쿠키 허용
+SESSION_COOKIE_SECURE = True      # HTTPS에서만 전송
+CSRF_COOKIE_SAMESITE = 'None'     # CSRF 쿠키도 크로스 사이트 허용
+CSRF_COOKIE_SECURE = True         # HTTPS에서만 전송
+
 # 허용할 HTTP 메서드
 CORS_ALLOW_METHODS = [
     'DELETE',
