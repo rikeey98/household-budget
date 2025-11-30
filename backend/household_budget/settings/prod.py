@@ -45,6 +45,10 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+# Static files (운영)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
+
 # 운영용 이메일, 캐시 등 필요시 추가
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')

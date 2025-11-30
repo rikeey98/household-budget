@@ -1,10 +1,4 @@
-[build]
-builder = "nixpacks"
-
-[build.env]
-NIXPACKS_NO_MUSL = "1"
-
 [deploy]
-startCommand = "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn household_budget.wsgi:application --bind 0.0.0.0:$PORT"
+startCommand = "python manage.py migrate && gunicorn household_budget.wsgi:application --bind 0.0.0.0:$PORT"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
