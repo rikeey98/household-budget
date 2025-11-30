@@ -3,7 +3,7 @@
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 # 운영용 PostgreSQL DB (환경변수로 관리)
 DATABASES = {
@@ -19,9 +19,8 @@ DATABASES = {
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "https://your-frontend-domain.com", #TODO: 프론트엔드 도메인 추가
-]
+# 환경변수로 프론트엔드 도메인 설정
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 
 # 허용할 HTTP 메서드
 CORS_ALLOW_METHODS = [
