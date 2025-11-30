@@ -25,7 +25,25 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        user = authenticate(username=data['username'], password=data['password'])
+        username = data.get('username')
+        password = data.get('password')
+
+        # 디버깅: 사용자 존재 확인
+        print(f"[LOGIN DEBUG] Attempting login for username: {username}")
+        try:
+            from .models import User
+            user_exists = User.objects.filter(username=username).exists()
+            print(f"[LOGIN DEBUG] User exists: {user_exists}")
+            if user_exists:
+                db_user = User.objects.get(username=username)
+                print(f"[LOGIN DEBUG] User active: {db_user.is_active}")
+                print(f"[LOGIN DEBUG] Password hash starts with: {db_user.password[:20]}")
+        except Exception as e:
+            print(f"[LOGIN DEBUG] Error checking user: {e}")
+
+        user = authenticate(username=username, password=password)
+        print(f"[LOGIN DEBUG] Authenticate result: {user}")
+
         if not user:
             raise serializers.ValidationError("아이디 또는 비밀번호가 올바르지 않습니다.")
         data['user'] = user
