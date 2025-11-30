@@ -50,9 +50,16 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Static files (운영)
+# Static files (운영) - WhiteNoise를 사용하여 static 파일 서빙
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# WhiteNoise를 MIDDLEWARE에 추가 (SecurityMiddleware 바로 다음)
+MIDDLEWARE.insert(
+    MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+)
 
 # 운영용 이메일, 캐시 등 필요시 추가
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

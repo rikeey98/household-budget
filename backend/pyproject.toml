@@ -29,6 +29,7 @@ dependencies = [
     "typing_extensions==4.14.0",
     "tzdata==2025.2",
     "uritemplate==4.2.0",
+    "whitenoise>=6.5.0",
 ]
 
 [build-system]
