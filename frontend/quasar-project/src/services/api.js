@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api/', // Django API 주소
+  baseURL: `${import.meta.env.VITE_API_URL}/api/`, // Django API 주소 (환경변수 사용)
   withCredentials: true, // ★ 세션 쿠키 자동 포함
 });
 
