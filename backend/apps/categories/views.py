@@ -29,6 +29,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
         print('==== [DEBUG] 카테고리 생성 요청 ====', flush=True)
         print('request.data:', request.data, flush=True)
         print('user:', request.user, flush=True)
+        print('is_authenticated:', request.user.is_authenticated, flush=True)
+        print('CSRF_COOKIE:', request.META.get('CSRF_COOKIE', 'NOT FOUND'), flush=True)
+        print('HTTP_X_CSRFTOKEN:', request.META.get('HTTP_X_CSRFTOKEN', 'NOT FOUND'), flush=True)
+        print('SESSION_KEY:', request.session.session_key, flush=True)
         data = request.data.copy()
         # data['user'] = request.user.id  # user 필드는 serializer.save에서 할당
         parent_id = data.get('parent')
